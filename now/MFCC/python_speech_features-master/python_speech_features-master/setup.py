@@ -1,5 +1,5 @@
 try:
-    from setuptools import setup #enables develop
+    from setuptools import setup  # enables develop
 except ImportError:
     from distutils.core import setup
 

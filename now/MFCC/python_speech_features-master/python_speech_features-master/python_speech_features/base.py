@@ -44,6 +44,7 @@ def mfcc(signal,samplerate=16000,winlen=0.025,winstep=0.01,numcep=13,
     """
     nfft = nfft or calculate_nfft(samplerate, winlen)
     feat,energy = fbank(signal,samplerate,winlen,winstep,nfilt,nfft,lowfreq,highfreq,preemph,winfunc)
+    # 调用fbank函数计算MFCC特征
     feat = numpy.log(feat)
     feat = dct(feat, type=2, axis=1, norm='ortho')[:,:numcep]
     feat = lifter(feat,ceplifter)
@@ -70,12 +71,17 @@ def fbank(signal,samplerate=16000,winlen=0.025,winstep=0.01,
     """
     highfreq= highfreq or samplerate/2
     signal = sigproc.preemphasis(signal,preemph)
+    # 对信号进行预加重(Pre-Emphasis)
     frames = sigproc.framesig(signal, winlen*samplerate, winstep*samplerate, winfunc)
+    # 把语音信号切分成25ms的帧，帧移是10ms
     pspec = sigproc.powspec(frames,nfft)
+    # 计算功率谱
     energy = numpy.sum(pspec,1) # this stores the total energy in each frame
     energy = numpy.where(energy == 0,numpy.finfo(float).eps,energy) # if energy is zero, we get problems with log
-
+    # 得到滤波器组
     fb = get_filterbanks(nfilt,nfft,samplerate,lowfreq,highfreq)
+    # 对log后的Filter
+    # Bank特征做DCT得到倒谱系数
     feat = numpy.dot(pspec,fb.T) # compute the filterbank energies
     feat = numpy.where(feat == 0,numpy.finfo(float).eps,feat) # if feat is zero, we get problems with log
 

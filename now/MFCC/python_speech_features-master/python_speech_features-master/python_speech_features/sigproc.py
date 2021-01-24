@@ -21,16 +21,17 @@ def rolling_window(a, window, step=1):
 def framesig(sig, frame_len, frame_step, winfunc=lambda x: numpy.ones((x,)), stride_trick=True):
     """Frame a signal into overlapping frames.
 
-    :param sig: the audio signal to frame.
+    :param sig: the audio signal to frame. 语音信号
     :param frame_len: length of each frame measured in samples.
     :param frame_step: number of samples after the start of the previous frame that the next frame should begin.
-    :param winfunc: the analysis window to apply to each frame. By default no window is applied.
-    :param stride_trick: use stride trick to compute the rolling window and window multiplication faster
+    :param winfunc: the analysis window to apply to each frame. By default no window is applied. 窗函数
+    :param stride_trick: use stride trick to compute the rolling window and window multiplication faster 是否使用stride trick来加速计算
     :returns: an array of frames. Size is NUMFRAMES by frame_len.
     """
     slen = len(sig)
     frame_len = int(round_half_up(frame_len))
     frame_step = int(round_half_up(frame_step))
+    # 计算帧数
     if slen <= frame_len:
         numframes = 1
     else:
